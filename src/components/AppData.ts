@@ -61,7 +61,6 @@ export class AppData {
 			return total + (product?.price || 0);
 		}, 0);
 	}
-
 	setOrderField(field: keyof IOrderForm, value: string) {
 		if (field === 'payment') {
 			this.order.payment = value as PaymentMethod;
@@ -105,4 +104,5 @@ export class AppData {
 		this.basket.total = 0;
 		this.events.emit('basket:changed', this.basket);
 	}
+
 }

@@ -1,6 +1,13 @@
 import { Api, ApiListResponse } from './base/api'; 
 import { IProduct, IOrder, IOrderResult } from '../types'; 
 
+export interface ILarekApi {
+  getProductList: () => Promise<IProduct[]>;
+  getProductItem: (id: string) => Promise<IProduct>;
+  orderProduct: (order: IOrder) => Promise<IOrderResult>;
+}
+
+
 export class LarekApi extends Api {
  
     getProductList(): Promise<ApiListResponse<IProduct>> {
