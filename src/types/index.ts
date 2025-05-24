@@ -23,7 +23,7 @@ export interface IOrderForm {
 	email: string;
 	phone: string;
 	address: string;
-	payment: 'онлайн' | 'при получении';
+	payment: PaymentMethod;
 }
 
 export interface IOrder extends IOrderForm {

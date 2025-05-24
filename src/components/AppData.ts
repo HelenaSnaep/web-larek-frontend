@@ -4,9 +4,9 @@ import {
 	IOrder,
 	IOrderForm,
 	PaymentMethod,
-	FormErrors,
-	IOrderResult
+	FormErrors
 } from '../types';
+
 import { IEvents } from '../components/base/events';
 
 export class AppData {
@@ -19,7 +19,7 @@ export class AppData {
 		email: '',
 		phone: '',
 		address: '',
-		payment: 'онлайн',
+		payment:'card',
 		items: []
 	};
 	preview: IProduct | null = null;
@@ -63,12 +63,16 @@ export class AppData {
 	}
 
 	setOrderField(field: keyof IOrderForm, value: string) {
-		this.order[field] = value;
+		if (field === 'payment') {
+			this.order.payment = value as PaymentMethod;
+		} else {
+			this.order[field] = value;
+		}
 		this.events.emit('order:updated', this.order);
 	}
 
 	setPayment(method: PaymentMethod) {
-		this.order.payment = method === 'card' ? 'онлайн' : 'при получении';
+		this.order.payment = method;
 		this.events.emit('order:updated', this.order);
 	}
 
