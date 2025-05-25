@@ -1,6 +1,7 @@
 import { IProduct } from "../types";
 import {Component} from "./base/Component";
 
+
 interface ICardActions {
     onClick: (event: MouseEvent) => void;
 }
@@ -10,10 +11,10 @@ export class Card extends Component<IProduct> {
     protected _title: HTMLHeadingElement;
     protected _price: HTMLSpanElement;
     protected _description: HTMLParagraphElement;
-    protected _category: HTMLSpanElement;
-    protected _button: HTMLButtonElement;
+    protected _category?: HTMLSpanElement;
+    protected _button?: HTMLButtonElement;
 
-    constructor(container: HTMLElement, protected actions: ICardActions) {
+    constructor(container: HTMLElement, actions: ICardActions) {
         super(container);
 
         this._image = container.querySelector('.card__image');
