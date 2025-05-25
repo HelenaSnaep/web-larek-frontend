@@ -16,6 +16,6 @@ events.onAll(({ eventName, data }) => {
 })
 
 api.getProductList().then(response => {
-  appData.setCatalog(response.items); // триггерит событие 'catalog:changed'
+  appData.setItems(response.items); 
 });
 
