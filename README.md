@@ -292,8 +292,6 @@ Event Broker — реализован через EventEmitter и обеспеч�
 * `removeFromBasket` удаляет товар из корзины
  если в заказе верно указаны все данные, устанавливает окно с оформленным заказом
 
- * `updateTotal` получает итоговую сумму заказа
-
 * `validateOrder` валидирует заказ, проверяет наличие данных покупателя
 
 * `setPayment` устанавливает способ оплаты заказа, отправляет событие  order:updated
@@ -309,9 +307,10 @@ Event Broker — реализован через EventEmitter и обеспеч�
 
 ```ts
 
+
 export interface IProduct {
   id: string;
-  name: string;
+  title: string;
   description: string;
   price: number | null;
   image: string;
@@ -320,7 +319,7 @@ export interface IProduct {
 
 
 export interface IBasket {
-  item: string[];
+  items: string[];
   total: number;
 }
 

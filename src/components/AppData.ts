@@ -1,10 +1,9 @@
 import {
 	IProduct,
 	IBasket,
-	IOrder,
 	IOrderForm,
 	PaymentMethod,
-	FormErrors
+	FormErrors,
 } from '../types';
 
 import { IEvents } from '../components/base/events';
@@ -13,23 +12,18 @@ export class AppData {
 	items: IProduct[] = [];
 	preview: IProduct | null = null;
 	basket: IBasket = {
-		item: [],
-		total: 0
+		items: [],
+		total: 0,
 	};
 
 	order: IOrderForm = {
 		email: '',
 		phone: '',
 		address: '',
-		payment: 'card'
-
+		payment: 'card',
 	};
 
-	formErrors: Partial<Record<keyof IOrderForm, string>> = {};
-
-	constructor(protected events: IEvents) {
-
-	}
+	constructor(protected events: IEvents) {}
 
 	setItems(items: IProduct[]) {
 		this.items = items;
@@ -41,36 +35,38 @@ export class AppData {
 		this.events.emit('preview:changed', this.preview);
 	}
 
-	inBasket(item: IProduct) {
-		return this.basket.item.includes(item.id);
+	addToBasket(item: IProduct) {
+		this.basket.items.push(item.id);
+		this.basket.total += item.price ?? 0;
+		this.events.emit('basket:changed', this.basket);
 	}
 
-	addToBasket(item: IProduct) {
-		if (!this.inBasket(item)) {
-			this.basket.item.push(item.id);
-			this.updateTotal();
-			this.events.emit('basket:changed', this.basket);
-		}
+	inBasket(item: IProduct) {
+		return this.basket.items.includes(item.id);
 	}
 
 	removeFromBasket(item: IProduct) {
-
+		this.basket.items = this.basket.items.filter((id) => id !== item.id);
+		this.basket.total -= item.price;
+		this.events.emit('basket:changed', this.basket);
 	}
 
-	updateTotal() {
-		this.basket.total = this.basket.item.reduce((total, id) => {
-			const product = this.items.find(p => p.id === id);
-			return total + (product?.price || 0);
-		}, 0);
+	clearBasket() {
+		this.basket.items = [];
+		this.basket.total = 0;
+		this.events.emit('basket:changed', this.basket);
 	}
-	
+
 	setOrderField(field: keyof IOrderForm, value: string) {
-
+		if (field === 'payment') {
+			this.order.payment = value as PaymentMethod;
+		} else {
+			this.order[field] = value;
+		}
 	}
 
 	setPayment(method: PaymentMethod) {
 		this.order.payment = method;
-		this.events.emit('order:updated', this.order);
 	}
 
 	setFormError(field: keyof IOrderForm, error: string) {
@@ -78,13 +74,32 @@ export class AppData {
 		this.events.emit('form:error', { field, error });
 	}
 
-	clearBasket() {
-		this.basket.item = [];
-		this.basket.total = 0;
-		this.events.emit('basket:changed', this.basket);
-	}
+	formErrors: FormErrors = {};
 
-	validateOrder(){
-}
+	validateOrder(): boolean {
+		this.formErrors = {};
+
+		if (!this.order.email.trim()) {
+			this.formErrors.email = 'Введите email';
+		} else if (!/^\S+@\S+\.\S+$/.test(this.order.email)) {
+			this.formErrors.email = 'Некорректный email';
+		}
+
+		if (!this.order.phone.trim()) {
+			this.formErrors.phone = 'Введите номер телефона';
+		} else if (!/^\+?\d{10,15}$/.test(this.order.phone)) {
+			this.formErrors.phone = 'Некорректный номер телефона';
+		}
+
+		if (this.order.payment === 'card' && !this.order.address.trim()) {
+			this.formErrors.address = 'Введите адрес';
+		}
+
+		Object.entries(this.formErrors).forEach(([field, error]) => {
+			this.events.emit('form:error', { field, error });
+		});
+
+		return Object.keys(this.formErrors).length === 0;
+	}
 
 }

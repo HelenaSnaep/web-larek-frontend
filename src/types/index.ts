@@ -1,7 +1,7 @@
 
 export interface IProduct {
   id: string;
-  name: string;
+  title: string;
   description: string;
   price: number | null;
   image: string;
@@ -10,7 +10,7 @@ export interface IProduct {
 
 
 export interface IBasket {
-  item: string[];
+  items: string[];
   total: number;
 }
 
