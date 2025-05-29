@@ -1,72 +1,52 @@
 import './scss/styles.scss';
 
-import { LarekApi }   from './components/LarekApi';
-import { API_URL, CDN_URL } from './utils/constants'
+import { LarekApi } from './components/LarekApi';
+import { API_URL, CDN_URL } from './utils/constants';
 import { EventEmitter } from './components/base/events';
 import { AppData } from './components/AppData';
-import { IProduct } from './types';
-
+import { IProduct, IBasket, IOrderForm, PaymentMethod } from './types';
+import { Card } from './components/Card';
+import { Page } from './components/Page';
+import { ensureElement } from './utils/utils';
 
 const events = new EventEmitter();
-const api = new LarekApi(API_URL, CDN_URL);
 
+const api = new LarekApi(API_URL, CDN_URL);
 const appData = new AppData(events);
 
-const productListTest: IProduct[] = [
-	{
-		id: "854cef69-976d-4c2a-a18c-2aa45046c390",
-		description: "Описание товара",
-		image: "/test.png",
-		title: "Тестовый товар",
-		category: "другое",
-		price: 100,
-	},
-];
+const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
+const cardPreviewTemplate = ensureElement<HTMLElement>('#card-preview');
+const cardBasketTemplate = ensureElement<HTMLElement>('#card-basket');
 
-const productItemTest: IProduct = {
-	id: "854cef69-976d-4c2a-a18c-2aa45046c390",
-	description: "Описание товара",
-	image: "/test.png",
-	title: "Тестовый товар",
-	category: "другое",
-	price: 100,
+const page = new Page(ensureElement<HTMLElement>('.page'), events);
+
+// Тестовый товар
+const testProduct: IProduct = {
+            id: "6a834fb8-350a-440c-ab55-d0e9b959b6e3",
+            description: "Даст время для изучения React, ООП и бэкенда",
+            image: "/Butterfly.svg",
+            title: "Микровселенная в кармане",
+            category: "другое",
+            price: 750
 };
 
-events.on('items:changed', (data) => {
-	console.log('Товары обновлены:', data);
+const cardTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
+const cardElement = (
+	cardTemplate.content.querySelector('.card') as HTMLElement
+).cloneNode(true) as HTMLElement;
+
+const card = new Card(cardElement, {
+	onClick: () => {
+		console.log('Карточка кликнута:', testProduct.id);
+	},
 });
 
-events.on('preview:changed', (data) => {
-	console.log('Превью обновлено:', data);
-});
+card.id = testProduct.id;
+card.title = testProduct.title;
+card.description = testProduct.description;
+card.image = testProduct.image;
+card.category = testProduct.category;
+card.price = testProduct.price;
+card.button = 'В корзину';
 
-events.on('basket:changed', (data) => {
-	console.log('Корзина обновлена:', data);
-});
-
-appData.setItems(productListTest);
-
-console.log('Товары:', appData.items);
-
-
-appData.setPreview(productItemTest);
-
-appData.addToBasket(productItemTest);
-
-console.log('В корзине?', appData.inBasket(productItemTest));
-
-appData.removeFromBasket(productItemTest);
-console.log('В корзине после удаления?', appData.inBasket(productItemTest));
-appData.clearBasket();
-console.log('Корзина после очистки:', appData.basket);
-appData.setOrderField('email', 'example@test.com');
-appData.setOrderField('phone', '+79001234567');
-appData.setOrderField('address', 'Тестовая улица, 1');
-
-// Валидация заказа
-const isValid = appData.validateOrder();
-console.log('Заказ валиден?', isValid);
-
-
-
-
+document.querySelector('.gallery')?.appendChild(card.getContainer());
