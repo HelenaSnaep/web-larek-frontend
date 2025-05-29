@@ -83,7 +83,4 @@ export class Card extends Component<IProduct> {
 		this.setText(this._button, value);
 	}
 
-	getContainer(): HTMLElement {
-		return this.container;
-	}
 }
