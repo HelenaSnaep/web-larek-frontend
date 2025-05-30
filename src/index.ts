@@ -41,6 +41,7 @@ events.on('items:changed', (items: IProduct[]) => {
 });
 
 
+
 api
 	.getProductList()
 	.then(appData.setItems.bind(appData))

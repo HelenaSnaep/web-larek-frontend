@@ -11,6 +11,7 @@ import { IEvents } from '../components/base/events';
 export class AppData {
 	items: IProduct[] = [];
 	preview: IProduct | null = null;
+	
 	basket: IBasket = {
 		items: [],
 		total: 0,
@@ -102,6 +103,6 @@ export class AppData {
 		return Object.keys(this.formErrors).length === 0;
 	}
 
-
+	
 
 }
