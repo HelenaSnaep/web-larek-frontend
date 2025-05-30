@@ -5,7 +5,7 @@ import { API_URL, CDN_URL } from './utils/constants';
 import { EventEmitter } from './components/base/events';
 import { AppData } from './components/AppData';
 import { IProduct, IBasket, IOrderForm, PaymentMethod } from './types';
-import { Card } from './components/Card';
+import { CardMain } from './components/CardMain';
 import { Page } from './components/Page';
 import { cloneTemplate, ensureElement } from './utils/utils';
 
@@ -33,12 +33,20 @@ events.on('card:select', (item: IProduct) => {
 
 events.on('items:changed', (items: IProduct[]) => {
 	page.catalog = items.map((item) => {
-		const card = new Card(cloneTemplate(cardCatalogTemplate), {
+		const card = new CardMain(cloneTemplate(cardCatalogTemplate), {
 			onClick: () => events.emit('card:select', item),
 		});
-		return card.render(item);
+
+		card.id = item.id;
+		card.title = item.title;
+		card.price = item.price;
+		card.image = item.image;
+		card.category = item.category;
+
+		return card.render();
 	});
 });
+
 
 
 
