@@ -18,32 +18,23 @@ export class Basket extends Component<IBasket> {
 			'.basket__button'
 		) as HTMLElement;
 
-		if (this._button) {
-			this._button.addEventListener('click', () => {
-				events.emit('order:open');
-			});
-		}
-
+		this._button.addEventListener('click', () => {
+			this.events.emit('basket:open');
+		});
 		this.items = [];
 	}
 
 	set items(items: HTMLElement[]) {
 		if (items.length) {
 			this._list.replaceChildren(...items);
+			this._button.removeAttribute('disabled');
 		} else {
 			this._list.replaceChildren(
 				createElement<HTMLParagraphElement>('p', {
 					textContent: 'Корзина пуста',
 				})
 			);
-		}
-	}
-
-	set selected(items: string[]) {
-		if (items.length) {
-			this.setDisabled(this._button, false);
-		} else {
-			this.setDisabled(this._button, true);
+			this._button.setAttribute('disabled', 'true');
 		}
 	}
 

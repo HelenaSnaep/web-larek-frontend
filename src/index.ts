@@ -92,7 +92,7 @@ events.on('basket:changed', () => {
 
 		basket.items = basketCards;
 		basket.total = appData.basket.total;
-		basket.selected = appData.basket.items;
+	
 		page.counter = appData.basket.items.length;
 	});
 	page.counter = appData.basket.items.length;

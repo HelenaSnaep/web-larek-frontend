@@ -1,13 +1,12 @@
 import { Form } from './common/Form';
 import { IOrderForm, PaymentMethod } from '../types';
-import { EventEmitter, IEvents } from './base/events';
+import { IEvents } from './base/events';
 import { ensureElement } from '../utils/utils';
 
 export class Order extends Form<IOrderForm> {
 	protected _paymentCard: HTMLButtonElement;
 	protected _paymentCash: HTMLButtonElement;
 	protected _address: HTMLInputElement;
-	protected _currentPayment: PaymentMethod = 'card';
 
 	constructor(container: HTMLFormElement, events: IEvents) {
 		super(container, events);
@@ -26,15 +25,25 @@ export class Order extends Form<IOrderForm> {
 			container
 		);
 
+		// Слушатели выбора оплаты
 		this._paymentCard.addEventListener('click', () => {
-			this.payment = 'card';
-			this.onInputChange('payment', 'card');
+			this.setPayment('card');
 		});
 
 		this._paymentCash.addEventListener('click', () => {
-			this.payment = 'cash';
-			this.onInputChange('payment', 'cash');
+			this.setPayment('cash');
 		});
+
+		// Слушатель изменения адреса
+		this._address.addEventListener('input', () => {
+			this.onInputChange('address', this._address.value);
+		});
+	}
+
+	// Метод установки активного способа оплаты и эмита события
+	setPayment(method: PaymentMethod) {
+		this.payment = method;
+		this.onInputChange('payment', method);
 	}
 
 	set address(value: string) {
@@ -42,13 +51,12 @@ export class Order extends Form<IOrderForm> {
 	}
 
 	set payment(method: PaymentMethod) {
-		this._currentPayment = method;
-
-		this._paymentCard.classList.toggle('button_alt_active', method === 'card');
-		this._paymentCash.classList.toggle('button_alt_active', method === 'cash');
-	}
-
-	get payment(): PaymentMethod {
-		return this._currentPayment;
+		if (method === 'card') {
+			this._paymentCard.classList.add('button_alt_active');
+			this._paymentCash.classList.remove('button_alt_active');
+		} else {
+			this._paymentCash.classList.add('button_alt_active');
+			this._paymentCard.classList.remove('button_alt_active');
+		}
 	}
 }
