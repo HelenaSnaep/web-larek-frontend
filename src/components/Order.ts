@@ -49,7 +49,11 @@ export class Order extends Form<IOrderForm> {
 	}
 
 	activateSubmitButton() {
-		this._submit.disabled = false;
+		const submitButton = this.container.querySelector<HTMLButtonElement>(
+			'button[type="submit"]'
+		);
+		if (submitButton) {
+			submitButton.disabled = false;
+		}
 	}
-
 }

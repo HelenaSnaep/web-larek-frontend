@@ -35,4 +35,11 @@ export class Contacts extends Form<IOrderForm> {
 	set phone(value: string) {
 		this._phone.value = value;
 	}
+
+	    get data(): Partial<IOrderForm> {
+        return {
+            email: this._email.value,
+            phone: this._phone.value,
+        };
+    }
 }
