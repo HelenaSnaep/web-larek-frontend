@@ -77,31 +77,28 @@ export class AppData {
 
 	formErrors: FormErrors = {};
 
-	validateOrder(): boolean {
-		this.formErrors = {};
+validateOrder(): boolean {
+	this.formErrors = {}; // очистка перед валидацией
 
-		if (!this.order.email.trim()) {
-			this.formErrors.email = 'Введите email';
-		} else if (!/^\S+@\S+\.\S+$/.test(this.order.email)) {
-			this.formErrors.email = 'Некорректный email';
-		}
-
-		if (!this.order.phone.trim()) {
-			this.formErrors.phone = 'Введите номер телефона';
-		} else if (!/^\+?\d{10,15}$/.test(this.order.phone)) {
-			this.formErrors.phone = 'Некорректный номер телефона';
-		}
-
-		if (this.order.payment === 'card' && !this.order.address.trim()) {
-			this.formErrors.address = 'Введите адрес';
-		}
-
-		Object.entries(this.formErrors).forEach(([field, error]) => {
-			this.events.emit('form:error', { field, error });
-		});
-
-		return Object.keys(this.formErrors).length === 0;
+	if (!this.order.email.trim()) {
+		this.setFormError('email', 'Введите email');
+	} else if (!/^\S+@\S+\.\S+$/.test(this.order.email)) {
+		this.setFormError('email', 'Некорректный email');
 	}
+
+	if (!this.order.phone.trim()) {
+		this.setFormError('phone', 'Введите номер телефона');
+	} else if (!/^\+?\d{10,15}$/.test(this.order.phone)) {
+		this.setFormError('phone', 'Некорректный номер телефона');
+	}
+
+	if (this.order.payment === 'card' && !this.order.address.trim()) {
+		this.setFormError('address', 'Введите адрес');
+	}
+
+	return Object.keys(this.formErrors).length === 0;
+}
+
 
 	
 

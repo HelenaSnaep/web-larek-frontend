@@ -8,48 +8,35 @@ interface ICardActions {
 }
 
 export class CardMain extends Component<IProduct> {
-	protected _title: HTMLElement;
-	protected _price: HTMLElement;
-	protected _category: HTMLElement;
-	protected _image: HTMLImageElement;
+	private _title: HTMLElement;
+	private _image: HTMLImageElement;
+	private _price: HTMLElement;
+	private _category: HTMLElement;
 
-	constructor(container: HTMLElement, protected actions: ICardActions) {
+	constructor(container: HTMLElement, actions: ICardActions) {
 		super(container);
-		this._title = ensureElement<HTMLElement>('.card__title', container);
-		this._price = ensureElement<HTMLElement>('.card__price', container);
-		this._category = ensureElement<HTMLElement>('.card__category', container);
+
+		this._title = ensureElement('.card__title', container);
 		this._image = ensureElement<HTMLImageElement>('.card__image', container);
+		this._price = ensureElement('.card__price', container);
+		this._category = ensureElement('.card__category', container);
+
+		this.container.addEventListener('click', actions.onClick);
 	}
 
-	set id(value: string) {
-		this.container.dataset.id = value;
-	}
+	render(data: IProduct): HTMLElement {
+		this.setText(this._title, data.title);
+		this.setText(this._price, `${data.price} синапсов`);
+		this._category.className = 'card__category';
 
-	get id(): string {
-		return this.container.dataset.id || '';
-	}
+		const categoryClass = `card__category_${
+			ProductCategory[data.category as keyof typeof ProductCategory]
+		}`;
+		this._category.classList.add(categoryClass);
+		this.setImage(this._image, data.image, data.title);
 
-	set title(value: string) {
-		this.setText(this._title, value);
-	}
+		this.container.dataset.id = data.id;
 
-	set price(value: number | null) {
-		this.setText(
-			this._price,
-			value !== null ? value + ' синапсов' : 'Бесценно'
-		);
-	}
-
-	set category(value: keyof typeof ProductCategory) {
-		this.setText(this._category, value);
-		this.toggleClass(
-			this._category,
-			`card__category_${ProductCategory[value]}`,
-			true
-		);
-	}
-
-	set image(value: string) {
-		this.setImage(this._image, value);
+		return this.container;
 	}
 }
