@@ -92,7 +92,7 @@ events.on('basket:changed', () => {
 
 		basket.items = basketCards;
 		basket.total = appData.basket.total;
-	
+
 		page.counter = appData.basket.items.length;
 	});
 	page.counter = appData.basket.items.length;
@@ -113,30 +113,39 @@ events.on('order:open', () => {
 });
 
 events.on('form:change', (data: { field: string; value: string }) => {
-	appData.setOrderField(data.field as keyof IOrderForm, data.value);
+  appData.setOrderField(data.field as keyof IOrderForm, data.value);
+
+  
+  const valid = appData.validateOrder();
+  order.render({
+    ...appData.order,
+    valid,
+    errors: Object.values(appData.formErrors),
+  });
 });
 
 
 events.on('form:submit', () => {
 	if (appData.validateOrder()) {
-		api.orderProduct({
-			...appData.order,
-			items: appData.basket.items,
-		}).then((result) => {
-			appData.clearBasket();
+		api
+			.orderProduct({
+				...appData.order,
+				items: appData.basket.items,
+			})
+			.then((result) => {
+				appData.clearBasket();
 
-			const success = new Success(cloneTemplate(successTemplate), {
-				onClick: () => modal.close()
-			});
-			success.total = result.total;
+				const success = new Success(cloneTemplate(successTemplate), {
+					onClick: () => modal.close(),
+				});
+				success.total = result.total;
 
-			modal.render({
-				content: success.render(),
+				modal.render({
+					content: success.render(),
+				});
 			});
-		});
 	}
 });
-
 
 events.on('modal:open', () => {
 	page.locked = true;

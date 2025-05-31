@@ -19,7 +19,7 @@ export class Basket extends Component<IBasket> {
 		) as HTMLElement;
 
 		this._button.addEventListener('click', () => {
-			this.events.emit('basket:open');
+			this.events.emit('order:open');
 		});
 		this.items = [];
 	}
