@@ -67,9 +67,7 @@ export class CardPreview extends Component<IProduct> {
 		this.setImage(this._image, value, this.title);
 	}
 
-	set buttonText(value: string) {
+	set button(value: string) {
 		this.setText(this._button, value);
 	}
-
-
 }

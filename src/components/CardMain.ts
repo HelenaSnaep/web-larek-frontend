@@ -26,15 +26,20 @@ export class CardMain extends Component<IProduct> {
 
 	render(data: IProduct): HTMLElement {
 		this.setText(this._title, data.title);
-		this.setText(this._price, `${data.price} синапсов`);
+
+		this.setText(
+			this._price,
+			data.price === null ? 'Бесценно' : `${data.price} синапсов`
+		);
+
 		this._category.className = 'card__category';
 
 		const categoryClass = `card__category_${
 			ProductCategory[data.category as keyof typeof ProductCategory]
 		}`;
 		this._category.classList.add(categoryClass);
-		this.setImage(this._image, data.image, data.title);
 
+		this.setImage(this._image, data.image, data.title);
 		this.container.dataset.id = data.id;
 
 		return this.container;

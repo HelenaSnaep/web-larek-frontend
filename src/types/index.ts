@@ -6,6 +6,7 @@ export interface IProduct {
 	description?: string;
 	image?: string;
 	category?: string;
+	index?: number;
 }
 
 

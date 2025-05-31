@@ -11,7 +11,6 @@ import { IEvents } from '../components/base/events';
 export class AppData {
 	items: IProduct[] = [];
 	preview: IProduct | null = null;
-	
 	basket: IBasket = {
 		items: [],
 		total: 0,
@@ -37,9 +36,11 @@ export class AppData {
 	}
 
 	addToBasket(item: IProduct) {
-		this.basket.items.push(item.id);
-		this.basket.total += item.price ?? 0;
-		this.events.emit('basket:changed', this.basket);
+		if (!this.basket.items.includes(item.id)) {
+			this.basket.items.push(item.id);
+			this.basket.total += item.price ?? 0;
+			this.events.emit('basket:changed', this.basket);
+		}
 	}
 
 	inBasket(item: IProduct) {
@@ -58,16 +59,16 @@ export class AppData {
 		this.events.emit('basket:changed', this.basket);
 	}
 
+	setPayment(method: PaymentMethod) {
+		this.order.payment = method;
+	}
+
 	setOrderField(field: keyof IOrderForm, value: string) {
 		if (field === 'payment') {
 			this.order.payment = value as PaymentMethod;
 		} else {
 			this.order[field] = value;
 		}
-	}
-
-	setPayment(method: PaymentMethod) {
-		this.order.payment = method;
 	}
 
 	setFormError(field: keyof IOrderForm, error: string) {
@@ -77,29 +78,29 @@ export class AppData {
 
 	formErrors: FormErrors = {};
 
-validateOrder(): boolean {
-	this.formErrors = {}; // очистка перед валидацией
+	validateOrder(): boolean {
+		this.formErrors = {};
 
-	if (!this.order.email.trim()) {
-		this.setFormError('email', 'Введите email');
-	} else if (!/^\S+@\S+\.\S+$/.test(this.order.email)) {
-		this.setFormError('email', 'Некорректный email');
+		if (!this.order.email.trim()) {
+			this.formErrors.email = 'Введите email';
+		} else if (!/^\S+@\S+\.\S+$/.test(this.order.email)) {
+			this.formErrors.email = 'Некорректный email';
+		}
+
+		if (!this.order.phone.trim()) {
+			this.formErrors.phone = 'Введите номер телефона';
+		} else if (!/^\+?\d{10,15}$/.test(this.order.phone)) {
+			this.formErrors.phone = 'Некорректный номер телефона';
+		}
+
+		if (this.order.payment === 'card' && !this.order.address.trim()) {
+			this.formErrors.address = 'Введите адрес доставки';
+		}
+
+		Object.entries(this.formErrors).forEach(([field, error]) => {
+			this.events.emit('form:error', { field, error });
+		});
+
+		return Object.keys(this.formErrors).length === 0;
 	}
-
-	if (!this.order.phone.trim()) {
-		this.setFormError('phone', 'Введите номер телефона');
-	} else if (!/^\+?\d{10,15}$/.test(this.order.phone)) {
-		this.setFormError('phone', 'Некорректный номер телефона');
-	}
-
-	if (this.order.payment === 'card' && !this.order.address.trim()) {
-		this.setFormError('address', 'Введите адрес');
-	}
-
-	return Object.keys(this.formErrors).length === 0;
-}
-
-
-	
-
 }
