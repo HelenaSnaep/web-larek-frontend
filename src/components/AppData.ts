@@ -20,7 +20,7 @@ export class AppData {
 		email: '',
 		phone: '',
 		address: '',
-		payment: 'card',
+		payment: null,
 	};
 
 	constructor(protected events: IEvents) {}
@@ -77,8 +77,8 @@ export class AppData {
 	}
 
 	formErrors: FormErrors = {};
-
-	validateOrder(): boolean {
+	
+	validateContacts(): boolean {
 		this.formErrors = {};
 
 		if (!this.order.email.trim()) {
@@ -92,9 +92,19 @@ export class AppData {
 		} else if (!/^\+?\d{10,15}$/.test(this.order.phone)) {
 			this.formErrors.phone = 'Некорректный номер телефона';
 		}
+		
+		return Object.keys(this.formErrors).length === 0;
+	}
 
-		if (this.order.payment === 'card' && !this.order.address.trim()) {
+	validateOrder(): boolean {
+		this.formErrors = {};
+
+		if (!this.order.address.trim()) {
 			this.formErrors.address = 'Введите адрес доставки';
+		}
+		
+		if (!this.order.payment) {
+			this.formErrors.payment = 'Выберите способ оплаты';
 		}
 
 		Object.entries(this.formErrors).forEach(([field, error]) => {

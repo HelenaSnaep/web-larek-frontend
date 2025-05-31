@@ -48,4 +48,8 @@ export class Order extends Form<IOrderForm> {
 		this._address.value = value;
 	}
 
+	activateSubmitButton() {
+		this._submit.disabled = false;
+	}
+
 }

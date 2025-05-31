@@ -112,11 +112,10 @@ events.on('order:open', () => {
 	});
 });
 
-events.on('form:change', (data: { field: string; value: string }) => {
+events.on(/^contacts\..*:change$/, (data: { field: string; value: string }) => {
   appData.setOrderField(data.field as keyof IOrderForm, data.value);
-
   
-  const valid = appData.validateOrder();
+  const valid = appData.validateContacts();
   order.render({
     ...appData.order,
     valid,
@@ -124,6 +123,21 @@ events.on('form:change', (data: { field: string; value: string }) => {
   });
 });
 
+
+events.on(/^order\..*:change$/, (data: { field: string; value: string }) => {
+  appData.setOrderField(data.field as keyof IOrderForm, data.value);
+  
+  const valid = appData.validateOrder();
+  if (valid) {
+	order.activateSubmitButton();
+  }
+
+  order.render({
+    ...appData.order,
+    valid,
+    errors: Object.values(appData.formErrors),
+  });
+});
 
 events.on('form:submit', () => {
 	if (appData.validateOrder()) {
