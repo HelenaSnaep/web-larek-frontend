@@ -15,16 +15,6 @@ export abstract class Component<T> {
         element.classList.toggle(className, force);
     }
 
-    // Добавить класс
-    addClass(element: HTMLElement, className: string) {
-        element.classList.add(className);
-    }
-
-    // Добавить класс
-    removeClass(element: HTMLElement, className: string) {
-        element.classList.remove(className);
-    }
-
     // Установить текстовое содержимое
     protected setText(element: HTMLElement, value: unknown) {
         if (element) {
