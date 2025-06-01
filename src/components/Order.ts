@@ -39,21 +39,12 @@ export class Order extends Form<IOrderForm> {
 	}
 
 	setPayment(method: PaymentMethod) {
-		this._paymentCard.classList.toggle('button_alt-active', method === 'card');
-		this._paymentCash.classList.toggle('button_alt-active', method === 'cash');
+		this.toggleClass(this._paymentCard, 'button_alt-active', method === 'card');
+		this.toggleClass(this._paymentCash, 'button_alt-active', method === 'cash');
 		this.onInputChange('payment', method);
 	}
 
 	set address(value: string) {
 		this._address.value = value;
-	}
-
-	activateSubmitButton() {
-		const submitButton = this.container.querySelector<HTMLButtonElement>(
-			'button[type="submit"]'
-		);
-		if (submitButton) {
-			submitButton.disabled = false;
-		}
 	}
 }

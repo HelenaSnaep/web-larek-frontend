@@ -16,11 +16,11 @@ import { Page } from './components/Page';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { Modal } from './components/common/Modal';
 import { CardPreview } from './components/CardPreview';
-import { Basket } from './components/common/Basket';
+import { Basket } from './components/Basket';
 import { CardBasket } from './components/CardBasket';
 import { Order } from './components/Order';
 import { Contacts } from './components/Contacts';
-import { Success } from './components/common/Success';
+import { Success } from './components/Success';
 
 const events = new EventEmitter();
 
