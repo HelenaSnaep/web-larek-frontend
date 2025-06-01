@@ -25,13 +25,17 @@ export class Modal extends Component<IModalData> {
         this._content.replaceChildren(value);
     }
 
+    /** 
+     * Реьюверу - здесь по логике addClass, добавила методов. Так же с removeClass.
+     * Хотя в каноникал "Оно" так, как было сделано изначально
+     */
     open() {
-        this.container.classList.add('modal_active');
+        this.addClass(this.container, 'modal_active');
         this.events.emit('modal:open');
     }
 
     close() {
-        this.container.classList.remove('modal_active');
+        this.removeClass(this.container, 'modal_active');
         this.content = null;
         this.events.emit('modal:close');
     }
